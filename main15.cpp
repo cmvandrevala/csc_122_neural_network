@@ -1,6 +1,7 @@
 #include <array>
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 using namespace std;
 
@@ -82,6 +83,15 @@ public:
 
     return outputs;
   }
+
+  void get_weights()
+  {
+    for (int i = 0; i < number_of_neurons * number_of_inputs; i++)
+    {
+      cout << weights[i] << endl;
+    }
+    cout << endl;
+  }
 };
 
 float categorical_cross_entropy(float outputs[], float target_outputs[], int size)
@@ -98,50 +108,65 @@ int main()
 {
   srand(time(NULL));
 
-  float inputs_1[4] = {1.2, 5.1, 2.1, 4.7};
-  float inputs_2[4] = {3.7, 4.1, 2.2, 4.6};
-  float inputs_3[4] = {2.2, 3.6, 2.3, 3.9};
-  float inputs_4[4] = {9.8, 6.1, 4.4, 0.3};
-  float inputs_5[4] = {2.2, 4.4, 6.4, 7.3};
-  float target_output_1[5] = {1, 0, 0, 0, 0};
-  float target_output_2[5] = {0, 1, 0, 0, 0};
-  float target_output_3[5] = {0, 1, 0, 0, 0};
-  float target_output_4[5] = {0, 0, 0, 0, 1};
-  float target_output_5[5] = {0, 0, 0, 0, 1};
+  float inputs[5][4] = {{1.2, 5.1, 2.1, 4.7}, {3.7, 4.1, 2.2, 4.6}, {2.2, 3.6, 2.3, 3.9}, {9.8, 6.1, 4.4, 0.3}, {2.2, 4.4, 6.4, 7.3}};
+  float target_outputs[5][5] = {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 0, 0, 1}, {0, 0, 0, 0, 1}};
+  float entropies[5];
+  float sum_of_entropies = 0;
+  int number_of_trials = 0;
+  vector<float> running_errors;
+  running_errors.push_back(-1000);
+  Layer *one;
+  Layer *two;
+  Layer *three;
 
-  Layer one = Layer(4, 3);
-  Layer two = Layer(3, 2);
-  Layer three = Layer(2, 5);
+  Layer *best_one;
+  Layer *best_two;
+  Layer *best_three;
 
-  float *outputs_1_1 = one.forward(inputs_1);
-  float *outputs_1_2 = two.forward(outputs_1_1);
-  float *outputs_1_3 = three.forward(outputs_1_2);
-  float entropy_1 = categorical_cross_entropy(outputs_1_3, target_output_1, 5);
-  cout << entropy_1 << endl;
+  while (number_of_trials < 10000)
+  {
+    one = new Layer(4, 3);
+    two = new Layer(3, 2);
+    three = new Layer(2, 5);
+    sum_of_entropies = 0;
 
-  float *outputs_2_1 = one.forward(inputs_2);
-  float *outputs_2_2 = two.forward(outputs_2_1);
-  float *outputs_2_3 = three.forward(outputs_2_2);
-  float entropy_2 = categorical_cross_entropy(outputs_2_3, target_output_2, 5);
-  cout << entropy_2 << endl;
+    for (int i = 0; i < 5; i++)
+    {
+      float *outputs_1 = one->forward(inputs[i]);
+      float *outputs_2 = two->forward(outputs_1);
+      float *outputs_3 = three->forward(outputs_2);
+      float entropy = categorical_cross_entropy(outputs_3, target_outputs[i], 5);
+      entropies[i] = entropy;
+      sum_of_entropies += entropy;
+    }
+    float mean_entropy = sum_of_entropies / 5;
+    if (mean_entropy > running_errors.back())
+    {
+      running_errors.push_back(mean_entropy);
+      cout << "Trial " << number_of_trials << ", Error = " << mean_entropy << endl;
+      best_one = one;
+      best_two = two;
+      best_three = three;
+    }
+    else
+    {
+      delete one;
+      delete two;
+      delete three;
+    }
+    number_of_trials++;
+  }
 
-  float *outputs_3_1 = one.forward(inputs_3);
-  float *outputs_3_2 = two.forward(outputs_3_1);
-  float *outputs_3_3 = three.forward(outputs_3_2);
-  float entropy_3 = categorical_cross_entropy(outputs_3_3, target_output_3, 5);
-  cout << entropy_3 << endl;
+  cout << endl;
 
-  float *outputs_4_1 = one.forward(inputs_4);
-  float *outputs_4_2 = two.forward(outputs_4_1);
-  float *outputs_4_3 = three.forward(outputs_4_2);
-  float entropy_4 = categorical_cross_entropy(outputs_4_3, target_output_4, 5);
-  cout << entropy_4 << endl;
+  cout << "LAYER ONE WEIGHTS" << endl;
+  best_one->get_weights();
 
-  float *outputs_5_1 = one.forward(inputs_5);
-  float *outputs_5_2 = two.forward(outputs_5_1);
-  float *outputs_5_3 = three.forward(outputs_5_2);
-  float entropy_5 = categorical_cross_entropy(outputs_5_3, target_output_5, 5);
-  cout << entropy_5 << endl;
+  cout << "LAYER TWO WEIGHTS" << endl;
+  best_two->get_weights();
+
+  cout << "LAYER THREE WEIGHTS" << endl;
+  best_three->get_weights();
 
   return 0;
 }

@@ -2,6 +2,9 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <fstream>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -83,6 +86,15 @@ public:
 
     return outputs;
   }
+
+  void get_weights()
+  {
+    for (int i = 0; i < number_of_neurons * number_of_inputs; i++)
+    {
+      cout << weights[i] << endl;
+    }
+    cout << endl;
+  }
 };
 
 float categorical_cross_entropy(float outputs[], float target_outputs[], int size)
@@ -90,7 +102,14 @@ float categorical_cross_entropy(float outputs[], float target_outputs[], int siz
   float entropy = 0;
   for (int i = 0; i < size; i++)
   {
-    entropy -= target_outputs[i] * log(outputs[i]);
+    if (abs(outputs[i]) > 0.001)
+    {
+      entropy -= target_outputs[i] * log(outputs[i]);
+    }
+    else
+    {
+      entropy -= 10;
+    }
   }
   return entropy;
 }
@@ -99,44 +118,111 @@ int main()
 {
   srand(time(NULL));
 
-  float inputs[5][4] = {{1.2, 5.1, 2.1, 4.7}, {3.7, 4.1, 2.2, 4.6}, {2.2, 3.6, 2.3, 3.9}, {9.8, 6.1, 4.4, 0.3}, {2.2, 4.4, 6.4, 7.3}};
-  float target_outputs[5][5] = {{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 0, 0, 1}, {0, 0, 0, 0, 1}};
-  float entropies[5];
+  int number_of_training_inputs = 15;
+  int number_of_data_fields = 8;
+  float inputs[number_of_training_inputs][number_of_data_fields];
+  float target_outputs[number_of_training_inputs][1];
+
+  // 54,035 lines of data
+  // 8 attributes per line
+  // 1 output - edible or not
+  ifstream file("mushroom_cleaned_no_headers.csv");
+  string line;
+  vector<float> split_line;
+  int index = 0;
+
+  if (file.is_open())
+  {
+    while (getline(file, line) && index < number_of_training_inputs)
+    {
+      stringstream ss(line);
+
+      while (ss.good())
+      {
+        string substr;
+        getline(ss, substr, ',');
+        split_line.push_back(stof(substr));
+      }
+      for (int i = 0; i < number_of_data_fields; i++)
+      {
+        inputs[index][i] = split_line.at(i);
+      }
+      target_outputs[index][0] = split_line.at(number_of_data_fields);
+      index++;
+      split_line.clear();
+    }
+    file.close();
+  }
+  else
+  {
+    cerr << "Unable to open file!" << endl;
+  }
+
+  // PRINT THE DATA TO VERIFY IT READ IN CORRECTLY
+
+  // for (int i = 0; i < number_of_training_inputs; i++)
+  // {
+  //   for (int j = 0; j < number_of_data_fields; j++)
+  //   {
+  //     cout << inputs[i][j] << '\t';
+  //   }
+  //   cout << endl;
+  // }
+
+  // for (int i = 0; i < number_of_training_inputs; i++)
+  // {
+  //   cout << target_outputs[i][0] << endl;
+  // }
+
+  float entropies[number_of_training_inputs];
   float sum_of_entropies = 0;
   int number_of_trials = 0;
   vector<float> running_errors;
-  running_errors.push_back(-1000);
+  running_errors.push_back(-10000);
   Layer *one;
   Layer *two;
   Layer *three;
 
+  Layer *best_one = nullptr;
+  Layer *best_two = nullptr;
+  Layer *best_three = nullptr;
+
   while (number_of_trials < 10000)
   {
-    one = new Layer(4, 3);
+    one = new Layer(8, 3);
     two = new Layer(3, 2);
-    three = new Layer(2, 5);
+    three = new Layer(2, 1);
     sum_of_entropies = 0;
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < number_of_training_inputs; i++)
     {
       float *outputs_1 = one->forward(inputs[i]);
       float *outputs_2 = two->forward(outputs_1);
       float *outputs_3 = three->forward(outputs_2);
-      float entropy = categorical_cross_entropy(outputs_3, target_outputs[i], 5);
+      float entropy = categorical_cross_entropy(outputs_3, target_outputs[i], number_of_training_inputs);
       entropies[i] = entropy;
       sum_of_entropies += entropy;
     }
-    float mean_entropy = sum_of_entropies / 5;
+    float mean_entropy = sum_of_entropies / number_of_training_inputs;
+    // cout << mean_entropy << endl;
     if (mean_entropy > running_errors.back())
     {
       running_errors.push_back(mean_entropy);
       cout << "Trial " << number_of_trials << ", Error = " << mean_entropy << endl;
-    }
-    number_of_trials++;
 
+      cout << "LAYER ONE WEIGHTS" << endl;
+      one->get_weights();
+
+      cout << "LAYER TWO WEIGHTS" << endl;
+      two->get_weights();
+
+      cout << "LAYER THREE WEIGHTS" << endl;
+      three->get_weights();
+    }
     delete one;
     delete two;
     delete three;
+    number_of_trials++;
   }
 
   return 0;
