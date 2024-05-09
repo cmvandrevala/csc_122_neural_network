@@ -50,6 +50,26 @@
 	g++ 13_entropy.cpp -o 13_entropy
 	./13_entropy
 
+14: clean
+	g++ 14_target_outputs.cpp -o 14_target_outputs
+	./14_target_outputs
+
+15: clean
+	g++ 15_mean_entropy.cpp -o 15_mean_entropy
+	./15_mean_entropy
+
+16: clean
+	g++ 16_awful_training_algorithm.cpp -o 16_awful_training_algorithm
+	./16_awful_training_algorithm
+
+17: clean
+	g++ 17_print_weights.cpp -o 17_print_weights
+	./17_print_weights
+
+18: clean
+	g++ 18_mushroom_analysis.cpp -o 18_mushroom_analysis
+	./18_mushroom_analysis
+
 clean:
 	@rm -f 1_summing_inputs
 	@rm -f 2_inputs_with_weights
@@ -64,3 +84,8 @@ clean:
 	@rm -f 11_softmax_activation_function
 	@rm -f 12_normalization
 	@rm -f 13_entropy
+	@rm -f 14_target_outputs
+	@rm -f 15_mean_entropy
+	@rm -f 16_awful_training_algorithm
+	@rm -f 17_print_weights
+	@rm -f 18_mushroom_analysis
