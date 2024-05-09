@@ -4,9 +4,6 @@
 
 using namespace std;
 
-// Three neurons
-// Each neuron gets the three inputs and has three different weights
-
 float random_number()
 {
   return ((double)rand() / (RAND_MAX)) + 1;

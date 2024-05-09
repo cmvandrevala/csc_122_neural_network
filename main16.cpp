@@ -118,7 +118,7 @@ int main()
 {
   srand(time(NULL));
 
-  int number_of_training_inputs = 15;
+  int number_of_training_inputs = 120;
   int number_of_data_fields = 8;
   float inputs[number_of_training_inputs][number_of_data_fields];
   float target_outputs[number_of_training_inputs][1];
@@ -183,10 +183,6 @@ int main()
   Layer *two;
   Layer *three;
 
-  Layer *best_one = nullptr;
-  Layer *best_two = nullptr;
-  Layer *best_three = nullptr;
-
   while (number_of_trials < 10000)
   {
     one = new Layer(8, 3);
@@ -204,7 +200,6 @@ int main()
       sum_of_entropies += entropy;
     }
     float mean_entropy = sum_of_entropies / number_of_training_inputs;
-    // cout << mean_entropy << endl;
     if (mean_entropy > running_errors.back())
     {
       running_errors.push_back(mean_entropy);

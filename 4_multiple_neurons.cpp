@@ -3,9 +3,6 @@
 
 using namespace std;
 
-// Three neurons
-// Each neuron gets the three inputs and has three different weights
-
 int main()
 {
   array<float, 4> inputs = {1.2, 5.1, 2.1, 4.7};

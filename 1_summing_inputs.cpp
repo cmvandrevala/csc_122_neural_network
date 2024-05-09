@@ -3,10 +3,6 @@
 
 using namespace std;
 
-// One neuron in one layer
-// Three inputs
-// Neuron / network gives one output
-
 int main()
 {
   array<float, 4> inputs = {1.2, 5.1, 2.1, 4.7};

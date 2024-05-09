@@ -3,9 +3,6 @@
 
 using namespace std;
 
-// Three neurons
-// Each neuron gets the three inputs and has three different weights
-
 class Layer
 {
 private:
