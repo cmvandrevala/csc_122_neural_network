@@ -8,11 +8,11 @@ using namespace std;
 
 int main()
 {
-  array<float, 3> inputs = {1.2, 5.1, 2.1};
+  array<float, 4> inputs = {1.2, 5.1, 2.1, 4.7};
 
-  array<float, 3> weights_1 = {3.1, 2.1, 8.7};
-  array<float, 3> weights_2 = {6.1, 2.3, 0.7};
-  array<float, 3> weights_3 = {4.1, 6.1, 8.8};
+  array<float, 4> weights_1 = {3.1, 2.1, 8.7, 0.5};
+  array<float, 4> weights_2 = {6.1, 2.3, 0.7, 1.2};
+  array<float, 4> weights_3 = {4.1, 6.1, 8.8, 4.2};
 
   float bias_1 = 3.0;
   float bias_2 = 2.0;

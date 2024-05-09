@@ -7,6 +7,11 @@ using namespace std;
 // Three neurons
 // Each neuron gets the three inputs and has three different weights
 
+float random_number()
+{
+  return ((double)rand() / (RAND_MAX)) + 1;
+};
+
 int main()
 {
   srand(time(NULL));
@@ -14,20 +19,20 @@ int main()
   array<float, 4> inputs = {1.2, 5.1, 2.1, 4.7};
 
   float weights[3][4];
-  weights[0][0] = 3.1;
-  weights[0][1] = 2.1;
-  weights[0][2] = 8.7;
-  weights[0][3] = 0.5;
-  weights[1][0] = 6.1;
-  weights[1][1] = 2.3;
-  weights[1][2] = 0.7;
-  weights[1][3] = 1.2;
-  weights[2][0] = 4.1;
-  weights[2][1] = 6.1;
-  weights[2][2] = 8.8;
-  weights[2][3] = 4.2;
+  for (int i = 0; i < 3; i++)
+  {
+    for (int j = 0; j < 4; j++)
+    {
+      weights[i][j] = random_number();
+    }
+  }
 
-  float biases[3] = {3.0, 2.0, 0.5};
+  float biases[3];
+  for (int i = 0; i < 3; i++)
+  {
+    biases[i] = random_number();
+  }
+
   float outputs[3];
 
   for (int i = 0; i < 3; i++)
