@@ -70,10 +70,28 @@ int main()
   float inputs[4] = {1.2, 5.1, 2.1, 4.7};
 
   Layer one = Layer(4, 3);
-  float *outputs = one.forward(inputs);
+  float *outputs_1 = one.forward(inputs);
   for (int i = 0; i < 3; i++)
   {
-    cout << *(outputs + i) << endl;
+    cout << *(outputs_1 + i) << endl;
+  }
+
+  cout << endl;
+
+  Layer two = Layer(3, 2);
+  float *outputs_2 = two.forward(inputs);
+  for (int i = 0; i < 2; i++)
+  {
+    cout << *(outputs_2 + i) << endl;
+  }
+
+  cout << endl;
+
+  Layer three = Layer(2, 5);
+  float *outputs_3 = three.forward(inputs);
+  for (int i = 0; i < 5; i++)
+  {
+    cout << *(outputs_3 + i) << endl;
   }
 
   return 0;
