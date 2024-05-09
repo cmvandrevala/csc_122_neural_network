@@ -89,7 +89,14 @@ float categorical_cross_entropy(float outputs[], float target_outputs[], int siz
   float entropy = 0;
   for (int i = 0; i < size; i++)
   {
-    entropy -= target_outputs[i] * log(outputs[i]);
+    if (abs(outputs[i]) > 0.001)
+    {
+      entropy -= target_outputs[i] * log(outputs[i]);
+    }
+    else
+    {
+      entropy -= 10;
+    }
   }
   return entropy;
 }
