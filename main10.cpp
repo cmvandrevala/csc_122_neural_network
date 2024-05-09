@@ -100,7 +100,7 @@ int main()
   cout << endl;
 
   Layer two = Layer(3, 2);
-  float *outputs_2 = two.forward(inputs);
+  float *outputs_2 = two.forward(outputs_1);
   for (int i = 0; i < 2; i++)
   {
     cout << *(outputs_2 + i) << endl;
@@ -109,7 +109,7 @@ int main()
   cout << endl;
 
   Layer three = Layer(2, 5);
-  float *outputs_3 = three.forward(inputs);
+  float *outputs_3 = three.forward(outputs_2);
   for (int i = 0; i < 5; i++)
   {
     cout << *(outputs_3 + i) << endl;

@@ -1,5 +1,6 @@
 #include <array>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -31,13 +32,19 @@ private:
 
   float activation_function(float n)
   {
-    if (n < 0)
+    return std::exp(n);
+  }
+
+  void normalize(float *outputs, int size)
+  {
+    float sum = 0;
+    for (int i = 0; i < size; i++)
     {
-      return 0.0;
+      sum += outputs[i];
     }
-    else
+    for (int i = 0; i < size; i++)
     {
-      return n;
+      outputs[i] = outputs[i] / sum;
     }
   }
 
@@ -71,9 +78,21 @@ public:
       outputs[i] = activation_function(inner_product(inputs, weights, this->number_of_inputs, i * number_of_neurons, biases[i]));
     }
 
+    normalize(outputs, this->number_of_neurons);
+
     return outputs;
   }
 };
+
+float categorical_cross_entropy(float outputs[], float target_outputs[], int size)
+{
+  float entropy = 0;
+  for (int i = 0; i < size; i++)
+  {
+    entropy -= target_outputs[i] * (outputs[i]);
+  }
+  return entropy;
+}
 
 int main()
 {
@@ -105,6 +124,14 @@ int main()
   {
     cout << *(outputs_3 + i) << endl;
   }
+
+  cout << endl;
+
+  float target_output[] = {1, 0, 0, 0, 0};
+
+  float entropy = categorical_cross_entropy(outputs_3, target_output, 5);
+
+  cout << entropy << endl;
 
   return 0;
 }
